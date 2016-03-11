@@ -24,6 +24,9 @@
 #include "Adafruit_BluefruitLE_UART.h"
 
 #include "BluefruitConfig.h"
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(0, 1);
 
 /*=========================================================================
     APPLICATION SETTINGS
@@ -95,6 +98,21 @@ void printHex(const uint8_t * data, const uint32_t numBytes);
 // the packet buffer
 extern uint8_t packetbuffer[];
 
+// Saves last known lon/lat
+float last_lon = 0.0;
+float last_lat = 0.0;
+
+// For button pressing
+int pin1 = 3;
+volatile int state = LOW;
+
+long lastDebounceTime = 0;
+long debounceDelay = 300;
+int lastButton = LOW;
+int buttonState;
+
+long lastButtonPress = 0;
+
 
 /**************************************************************************/
 /*!
@@ -104,26 +122,30 @@ extern uint8_t packetbuffer[];
 /**************************************************************************/
 void setup(void)
 {
-  while (!Serial);  // required for Flora & Micro
+//  while (!Serial);  // required for Flora & Micro
   delay(500);
 
   Serial.begin(115200);
-  Serial.println(F("Adafruit Bluefruit App Controller Example"));
-  Serial.println(F("-----------------------------------------"));
+  Serial1.begin(115200); 
+  
+  
+
+//  Serial.println(F("Adafruit Bluefruit App Controller Example"));
+//  Serial.println(F("-----------------------------------------"));
 
   /* Initialise the module */
-  Serial.print(F("Initialising the Bluefruit LE module: "));
+//  Serial.print(F("Initialising the Bluefruit LE module: "));
 
   if ( !ble.begin(VERBOSE_MODE) )
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
-  Serial.println( F("OK!") );
+//  Serial.println( F("OK!") );
 
   if ( FACTORYRESET_ENABLE )
   {
     /* Perform a factory reset to make sure everything is in a known state */
-    Serial.println(F("Performing a factory reset: "));
+//    Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ){
       error(F("Couldn't factory reset"));
     }
@@ -133,13 +155,13 @@ void setup(void)
   /* Disable command echo from Bluefruit */
   ble.echo(false);
 
-  Serial.println("Requesting Bluefruit info:");
-  /* Print Bluefruit information */
-  ble.info();
+//  Serial.println("Requesting Bluefruit info:");
+//  /* Print Bluefruit information */
+//  ble.info();
 
-  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in Controller mode"));
-  Serial.println(F("Then activate/use the sensors, color picker, game controller, etc!"));
-  Serial.println();
+//  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in Controller mode"));
+//  Serial.println(F("Then activate/use the sensors, color picker, game controller, etc!"));
+//  Serial.println();
 
   ble.verbose(false);  // debug info is a little annoying after this point!
 
@@ -148,21 +170,23 @@ void setup(void)
       delay(500);
   }
 
-  Serial.println(F("******************************"));
+//  Serial.println(F("******************************"));
 
   // LED Activity command is only supported from 0.6.6
   if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
   {
     // Change Mode LED Activity
-    Serial.println(F("Change LED activity to " MODE_LED_BEHAVIOUR));
+//    Serial.println(F("Change LED activity to " MODE_LED_BEHAVIOUR));
     ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
   }
 
   // Set Bluefruit to DATA mode
-  Serial.println( F("Switching to DATA mode!") );
+//  Serial.println( F("Switching to DATA mode!") );
   ble.setMode(BLUEFRUIT_MODE_DATA);
 
-  Serial.println(F("******************************"));
+//  Serial.println(F("******************************"));
+
+  pinMode(pin1, INPUT);
 
 }
 
@@ -174,6 +198,15 @@ void setup(void)
 void loop(void)
 {
   /* Wait for new data to arrive */
+
+
+  if (digitalRead(pin1) != 0 && (millis() - lastDebounceTime) > debounceDelay) {
+        long pressed = millis();
+        // transfer lat lon
+        Serial1.println(last_lon);
+        Serial1.println(last_lat);
+        lastDebounceTime = millis();
+  }
   uint8_t len = readPacket(&ble, BLE_READPACKET_TIMEOUT);
   if (len == 0) return;
 
@@ -212,12 +245,14 @@ void loop(void)
     lat = parsefloat(packetbuffer+2);
     lon = parsefloat(packetbuffer+6);
     alt = parsefloat(packetbuffer+10);
-    Serial.print("GPS Location\t");
-    Serial.print("Lat: "); Serial.print(lat, 4); // 4 digits of precision!
-    Serial.print('\t');
-    Serial.print("Lon: "); Serial.print(lon, 4); // 4 digits of precision!
-    Serial.print('\t');
-    Serial.print(alt, 4); Serial.println(" meters");
+    last_lat = lat;
+    last_lon = lon;
+//    Serial.print("GPS Location\t");
+//    Serial.print("Lat: "); Serial.print(lat, 4); // 4 digits of precision!
+//    Serial.print('\t');
+//    Serial.print("Lon: "); Serial.print(lon, 4); // 4 digits of precision!
+//    Serial.print('\t');
+//    Serial.print(alt, 4); Serial.println(" meters");
   }
 
   // Accelerometer
@@ -226,10 +261,10 @@ void loop(void)
     x = parsefloat(packetbuffer+2);
     y = parsefloat(packetbuffer+6);
     z = parsefloat(packetbuffer+10);
-    Serial.print("Accel\t");
-    Serial.print(x); Serial.print('\t');
-    Serial.print(y); Serial.print('\t');
-    Serial.print(z); Serial.println();
+//    Serial.print("Accel\t");
+//    Serial.print(x); Serial.print('\t');
+//    Serial.print(y); Serial.print('\t');
+//    Serial.print(z); Serial.println();
   }
 
 //  // Magnetometer
@@ -270,3 +305,4 @@ void loop(void)
 //    Serial.print(w); Serial.println();
 //  }
 }
+
