@@ -25,9 +25,11 @@
 
 #include "BluefruitConfig.h"
 #include <SoftwareSerial.h>
+#include <Servo.h>
+Servo myservo; 
 
 SoftwareSerial mySerial(0, 1);
-
+int pos = 0;
 /*=========================================================================
     APPLICATION SETTINGS
 
@@ -187,7 +189,7 @@ void setup(void)
 //  Serial.println(F("******************************"));
 
   pinMode(pin1, INPUT);
-
+  myservo.attach(9);
 }
 
 /**************************************************************************/
@@ -205,7 +207,13 @@ void loop(void)
         // transfer lat lon
         Serial1.println(last_lon);
         Serial1.println(last_lat);
+        Serial.println("Button pressed");
         lastDebounceTime = millis();
+        for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+          // in steps of 1 degree
+          myservo.write(pos);              // tell servo to go to position in variable 'pos'
+          delay(15);                       // waits 15ms for the servo to reach the position
+        }
   }
   uint8_t len = readPacket(&ble, BLE_READPACKET_TIMEOUT);
   if (len == 0) return;
