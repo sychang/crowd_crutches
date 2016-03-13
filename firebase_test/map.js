@@ -1,5 +1,5 @@
 // Reference to the Firebase database.
-var firebase = new Firebase("blistering-inferno-357.firebaseIO.com");
+var firebase = new Firebase("blistering-inferno-357.firebaseIO.com/coords");
 
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
