@@ -35,8 +35,8 @@ int status = WL_IDLE_STATUS;
 // if you don't want to use DNS (and reduce your sketch size)
 // use the numeric IP instead of the name for the server:
 //IPAddress server(141,101,112,175);  // numeric IP for test page (no DNS)
-char server[] = "www.blistering-inferno-357.firebaseIO.com";    // domain name for test page (using DNS)
-#define webpage "/message_list.json"  // path to test page
+char server[] = "radar-cructches.herokuapp.com";    // domain name for test page (using DNS)
+#define webpage "/add_marker"  // path to test page
 
 
 // Initialize the Ethernet client library
@@ -135,17 +135,24 @@ void loop() {
 
 void post()
 {
-//
-//        if (client.connect(server, 80)) {
-//        Serial.println("connected to server");
-//        // Make a HTTP request:
-//        client.print("GET ");
+
+        if (client.connect(server, 80)) {
+        Serial.println("connected to server");
+        // Make a HTTP request:
+        client.print("GET ");
 //        client.print(webpage);
-//        client.println(" HTTP/1.1");
-//        client.print("Host: "); client.println(server);
-//        client.println("Connection: close");
-//        client.println();
-//      }
+        client.print("/add_marker?lat=");
+        client.print(lat);
+        client.print("&lon=");
+        client.print(lon); 
+        client.println(" HTTP/1.1");
+        client.print("Host: "); 
+
+//        ?var1=value1&var2=value2&var3=value3
+        client.println(server);
+        client.println("Connection: close");
+        client.println();
+      }
 
 //  String PostData = "{\"lat\":";
 //  char buffer[5];
@@ -155,26 +162,26 @@ void post()
 //  PostData = PostData + String(lon);
 //  PostData = PostData +"}";
 //  Serial.println(PostData);
-  String PostData = "{\"test\":1}";
-
-  if (client.connect(server, 80)) {
-    Serial.println("connected");
-    client.println("POST /test.json HTTP/1.1");
-    client.println("Host:  blistering-inferno-357.firebaseIO.com");
-    client.println("User-Agent: Arduino/1.0");
-    client.println("Connection: close");
-    client.println("Content-Type: application/x-www-form-urlencoded;");
-    client.print("Content-Length: ");
-//    client.println(PostData.length()+10);
-    client.println(PostData.length());
-    client.println();
-//    client.print("{\"lat\":");
-//    client.print(lat);
-//    client.print(",\"lng\":");
-//    client.print(lon);
-//    client.println("}");
-    client.println(PostData);
-  } else {
+//  String PostData = "{\"test\":1}";
+//
+//  if (client.connect(server, 80)) {
+//    Serial.println("connected");
+//    client.println("POST / HTTP/1.1");
+//    client.println("Host:  http://radar-cructches.herokuapp.com");
+//    client.println("User-Agent: Arduino/1.0");
+//    client.println("Connection: close");
+//    client.println("Content-Type: application/x-www-form-urlencoded;");
+//    client.print("Content-Length: ");
+////    client.println(PostData.length()+10);
+//    client.println(PostData.length());
+//    client.println();
+////    client.print("{\"lat\":");
+////    client.print(lat);
+////    client.print(",\"lng\":");
+////    client.print(lon);
+////    client.println("}");
+//    client.println(PostData);
+   else {
     Serial.println("connection failed");
   }
 }
