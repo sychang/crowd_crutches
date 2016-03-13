@@ -1,11 +1,12 @@
-// Reference to the Firebase database.
+
+
 var firebase = new Firebase("blistering-inferno-357.firebaseIO.com");
 
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 0, lng: 0},
     zoom: 3
-  });
+  })j;
 
   // Add marker on user click
   map.addListener('click', function(e) {
