@@ -190,7 +190,10 @@ void setup(void)
 
   pinMode(pin1, INPUT);
   myservo.attach(9);
+//  myservo.write(0);
 }
+
+//int servoPos = 0;
 
 /**************************************************************************/
 /*!
@@ -205,15 +208,18 @@ void loop(void)
   if (digitalRead(pin1) != 0 && (millis() - lastDebounceTime) > debounceDelay) {
         long pressed = millis();
         // transfer lat lon
-        Serial1.println(last_lon);
-        Serial1.println(last_lat);
+        Serial1.println(last_lon,7);
+        Serial1.println(last_lat,7);
+        Serial.println(last_lon,7);
         Serial.println("Button pressed");
         lastDebounceTime = millis();
-        for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-          // in steps of 1 degree
-          myservo.write(pos);              // tell servo to go to position in variable 'pos'
-          delay(15);                       // waits 15ms for the servo to reach the position
-        }
+  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+//  myservo.write(90);
+
   }
   uint8_t len = readPacket(&ble, BLE_READPACKET_TIMEOUT);
   if (len == 0) return;
@@ -254,6 +260,7 @@ void loop(void)
     lon = parsefloat(packetbuffer+6);
     alt = parsefloat(packetbuffer+10);
     last_lat = lat;
+    
     last_lon = lon;
 //    Serial.print("GPS Location\t");
 //    Serial.print("Lat: "); Serial.print(lat, 4); // 4 digits of precision!

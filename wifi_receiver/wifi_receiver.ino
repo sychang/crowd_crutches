@@ -112,7 +112,7 @@ void loop() {
 
   // put your main code here, to run repeatedly:
    incoming = Serial1.available();
-
+//    Serial.println("test");
    while (incoming != 0) 
    {
      
@@ -122,6 +122,7 @@ void loop() {
      String lat_str = serial_read.substring(split+1, serial_read.length() - 1);
      lat = lat_str.toFloat();
      lon = lon_str.toFloat();
+     Serial.println(lat);
      Serial.println("\nStarting connection to server...");
       // if you get a connection, report back via serial:
       post();
@@ -142,9 +143,9 @@ void post()
         client.print("GET ");
 //        client.print(webpage);
         client.print("/add_marker?lat=");
-        client.print(lat);
+        client.print(lat,9);
         client.print("&lon=");
-        client.print(lon); 
+        client.print(lon,9); 
         client.println(" HTTP/1.1");
         client.print("Host: "); 
 

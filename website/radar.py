@@ -1,6 +1,9 @@
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
-
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+ 
 import requests
 
 app = Flask(__name__)
@@ -17,7 +20,22 @@ def add_marker():
 	data = {'lat':lat, 'lng': lon}
 	r = requests.post('https://blistering-inferno-357.firebaseIO.com/coords.json', json=data)
 	# r = requests.post('https://blistering-inferno-357.firebaseIO.com/coords.json', data = {'lat':lat, 'lng': lon}, verify=True)
-	print r
+	fromaddr = "radar.alert.cm@gmail.com"
+	toaddr = "berkeley.asuc.ada@gmail.com"
+	msg = MIMEMultipart()
+	msg['From'] = fromaddr
+	msg['To'] = toaddr
+	msg['Subject'] = "rADAr Alert at (" + lat + "," + lon + ")"
+	 
+	body = "There was been a non-ADA accessible incident reported at (" + lat + "," + lon + "). To view the incident, please go to: ______"
+	msg.attach(MIMEText(body, 'plain'))
+	 
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.starttls()
+	server.login(fromaddr, "sechromojuluming")
+	text = msg.as_string()
+	server.sendmail(fromaddr, toaddr, text)
+	server.quit()
    	return "empty"
 
 if __name__ == '__main__':
