@@ -189,8 +189,11 @@ void setup(void)
 //  Serial.println(F("******************************"));
 
   pinMode(pin1, INPUT);
-  myservo.attach(9);
-//  myservo.write(0);
+  digitalWrite(pin1, HIGH);
+// 
+//  myservo.write(180);
+//  delay(20);
+//  myservo.write(90);
 }
 
 //int servoPos = 0;
@@ -198,14 +201,14 @@ void setup(void)
 /**************************************************************************/
 /*!
     @brief  Constantly poll for new command or response data
-*/
+*
 /**************************************************************************/
 void loop(void)
 {
   /* Wait for new data to arrive */
 
-
-  if (digitalRead(pin1) != 0 && (millis() - lastDebounceTime) > debounceDelay) {
+//  Serial.println(digitalRead(pin1));
+  if (digitalRead(pin1) != 1 && (millis() - lastDebounceTime) > debounceDelay) {
         long pressed = millis();
         // transfer lat lon
         Serial1.println(last_lon,7);
@@ -219,12 +222,14 @@ void loop(void)
 //    myservo.write(180);              // tell servo to go to position in variable 'pos'
 ////    delay(15);                       // waits 15ms for the servo to reach the position
 //  }
-  myservo.write(160);
-  delay(800);
-  myservo.write(80);
+    myservo.attach(9); 
+    myservo.write(30);
+    delay(2000);
+    myservo.detach();
+//  myservo.write(90);
 //  delay(15);
 //  myservo.write(90);
-  delay(500);
+//  delay(500);
 
   }
   uint8_t len = readPacket(&ble, BLE_READPACKET_TIMEOUT);
