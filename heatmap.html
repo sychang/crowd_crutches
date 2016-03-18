@@ -35,6 +35,7 @@
         text-align: center;
         font-size: 16px;
         font-weight: lighter;
+        margin-bottom: 50px;
 /*        position: absolute;*/
       }
       #text-outer {
@@ -114,16 +115,12 @@
       <button onclick="changeOpacity()">Change opacity</button>
  -->    </div>
     <div id="map"></div>
-    <div id="legendText">Color Key</div>
+    <div id="legendText">Density of Reports</div>
     <div id="legend">
     <div id="legendGradient"></div>
     <div id="text-outer">
       <div id="text">
-        How ADA accessible is UC Berkeley?  Above is a heatmap representing the density of campus locations reported as "ADA unfriendly."  Users with the RADAR hardware simply press a button and their current location gets flagged on our map as being ADA unfriendly. 
-
-        LEAVE comments?
-
-        it reports their current GPS location.  Click on a region to find out more.  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.
+        How ADA accessible is UC Berkeley?  Above is a heatmap representing the density of campus locations reported as "ADA unfriendly."  Users with the RADAR hardware simply press a button and their current location gets flagged on our map as having ADA accessibility issues.  Crutch users: Beware! UC Berkeley administration: Do something! #invented@jacobs
       </div>
     </div>
     </div>
@@ -150,8 +147,11 @@
         // });
 
         // Create a heatmap.
-        var heatmap = new google.maps.visualization.HeatmapLayer({
-          data: [],
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: [new google.maps.LatLng(37.871289, -122.259085),
+          new google.maps.LatLng(37.871289, -122.259085),
+          new google.maps.LatLng(37.875866, -122.258692),
+          ],
           map: map,
           radius: 8
         });
