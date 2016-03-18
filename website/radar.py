@@ -25,7 +25,7 @@ def add_marker():
 	msg = MIMEMultipart()
 	msg['From'] = fromaddr
 	msg['To'] = toaddr
-	msg['Subject'] = "rADAr Alert at (" + lat + "," + lon + ")"
+	msg['Subject'] = "RADAR Alert at (" + lat + "," + lon + ")"
 	 
 	body = "There was been a non-ADA accessible incident reported at (" + lat + "," + lon + "). To view the incident, please go to: ______"
 	msg.attach(MIMEText(body, 'plain'))
